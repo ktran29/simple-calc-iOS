@@ -12,7 +12,13 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var display: UILabel!
     
-    var expressionString = ""
+    var numberString = ""
+    var operation = ""
+    var count = 0
+    var sum = 0
+    var storedValue = 0
+    var calculated = false
+    var operated = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,30 +36,87 @@ class ViewController: UIViewController {
         
         switch buttonTitle {
         case "0"?, "1"?, "2"?, "3"?, "4"?, "5"?, "6"?, "7"?, "8"?, "9"?:
-            display.text = display.text! + buttonTitle!
-            expressionString += buttonTitle!
+            if calculated {
+                display.text = "0"
+                calculated = false
+            }
+            if display.text! == "0" || operated {
+                display.text = buttonTitle!
+                operated = false
+            } else {
+                display.text = display.text! + buttonTitle!
+            }
+            numberString += buttonTitle!
             
-        case "+"?:
-            break
-        case "-"?:
-            break
-        case "*"?:
-            break
-        case "/"?:
-            break
-        case "%"?:
-            break
+        case "+"?, "-"?, "*"?, "/"?, "%"?:
+            storedValue = Int(numberString)!
+            numberString = ""
+            operation = buttonTitle!
+            operated = true
         case "ct"?:
-            break
+            count += 1
+            operation = "ct"
+            operated = true
         case "avg"?:
-            break
+            count += 1
+            sum += Int(numberString)!
+            operation = "avg"
+            operated = true
         case "fact"?:
-            break
+            var factorial = 1;
+            var start = Int(numberString)!
+            while start > 0 {
+                factorial *= start
+                start -= 1
+            }
+            display.text = String(factorial)
+            numberString = ""
+            calculated = true
         case "="?:
-            break
+            let value = calculate(Int(numberString)!)
+            display.text = String(value)
+            calculated = true
+            reset()
         default:
             break
         }
+    }
+    
+    public func calculate(_ newValue: Int) -> Int {
+        
+        switch operation {
+        case "+":
+            return storedValue + newValue
+        case "-":
+            return storedValue - newValue
+        case "*":
+            return storedValue * newValue
+        case "/":
+            return storedValue / newValue
+        case "%":
+            while storedValue >= 0 {
+                storedValue -= newValue
+            }
+            if (storedValue != 0) {
+                storedValue += newValue
+            }
+            return storedValue
+        case "avg":
+            return count / sum
+        case "ct":
+            return count
+        default:
+            return 0
+        }
+    }
+    
+    public func reset() -> Void {
+        numberString = ""
+        operation = ""
+        count = 0
+        sum = 0
+        storedValue = 0
+        operated = false
     }
 
 }
