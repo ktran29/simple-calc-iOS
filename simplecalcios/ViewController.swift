@@ -14,16 +14,16 @@ class ViewController: UIViewController {
     
     var numberString = ""
     var operation = ""
-    var count = 0
-    var sum = 0
-    var storedValue = 0
+    var count : Double = 0
+    var sum : Double = 0
+    var storedValue : Double = 0
     var calculated = false
     var operated = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        display.text = ""
+        display.text = "0"
     }
 
     override func didReceiveMemoryWarning() {
@@ -49,7 +49,7 @@ class ViewController: UIViewController {
             numberString += buttonTitle!
             
         case "+"?, "-"?, "*"?, "/"?, "%"?:
-            storedValue = Int(numberString)!
+            storedValue = Double(numberString)!
             numberString = ""
             operation = buttonTitle!
             operated = true
@@ -59,12 +59,12 @@ class ViewController: UIViewController {
             operated = true
         case "avg"?:
             count += 1
-            sum += Int(numberString)!
+            sum += Double(numberString)!
             operation = "avg"
             operated = true
         case "fact"?:
-            var factorial = 1;
-            var start = Int(numberString)!
+            var factorial : Double = 1;
+            var start = Double(numberString)!
             while start > 0 {
                 factorial *= start
                 start -= 1
@@ -73,7 +73,7 @@ class ViewController: UIViewController {
             numberString = ""
             calculated = true
         case "="?:
-            let value = calculate(Int(numberString)!)
+            let value = calculate(Double(numberString)!)
             display.text = String(value)
             calculated = true
             reset()
@@ -98,7 +98,7 @@ class ViewController: UIViewController {
         }
     }
     
-    public func calculate(_ newValue: Int) -> Int {
+    fileprivate func calculate(_ newValue: Double) -> Double {
         
         switch operation {
         case "+":
@@ -126,7 +126,7 @@ class ViewController: UIViewController {
         }
     }
     
-    public func reset() -> Void {
+    fileprivate func reset() -> Void {
         numberString = ""
         operation = ""
         count = 0
