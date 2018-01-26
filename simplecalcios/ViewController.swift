@@ -78,8 +78,9 @@ class ViewController: UIViewController {
             calculated = true
             reset()
         case "="?:
-            let value = isCommonOp() ? calculate(Double(numberString)!) : calculate()
-            display.text = String(value)
+            let newValue = numberString != "undef" ? Double(numberString)! : 0
+            let updatedValue = isCommonOp() ? calculate(newValue) : calculate()
+            display.text = String(updatedValue)
             calculated = true
             reset()
         case "."?:
