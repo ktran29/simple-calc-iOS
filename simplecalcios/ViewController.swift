@@ -77,6 +77,22 @@ class ViewController: UIViewController {
             display.text = String(value)
             calculated = true
             reset()
+        case "."?:
+            if !numberString.contains(".") {
+                display.text = display.text! + "."
+                numberString += "."
+            }
+            
+        case "+/-"?:
+            if !numberString.starts(with: "-") {
+                numberString = "-" + numberString
+                display.text = numberString
+            } else {
+                let index = numberString.index(numberString.startIndex, offsetBy: 1)
+                numberString = String(numberString[index...])
+                display.text = numberString
+            }
+            
         default:
             break
         }
