@@ -11,8 +11,8 @@ import UIKit
 class ViewController: UIViewController {
     
     @IBOutlet weak var display: UILabel!
-    
-    var numberString = ""
+
+    var numberString = "undef"
     var operation = ""
     var count : Double = 0
     var sum : Double = 0
@@ -46,55 +46,77 @@ class ViewController: UIViewController {
             } else {
                 display.text = display.text! + buttonTitle!
             }
-            numberString += buttonTitle!
-            
+            if numberString == "undef" {
+                numberString = buttonTitle!
+            } else {
+                numberString += buttonTitle!
+            }
         case "+"?, "-"?, "*"?, "/"?, "%"?:
-            storedValue = Double(numberString)!
-            numberString = ""
+            storedValue = numberString != "undef" ? Double(numberString)! : 0
+            numberString = "undef"
             operation = buttonTitle!
             operated = true
         case "ct"?:
             count += 1
+            numberString = "undef"
             operation = "ct"
             operated = true
         case "avg"?:
             count += 1
-            sum += Double(numberString)!
+            sum = numberString != "undef" ? sum + Double(numberString)! : 0
+            numberString = "undef"
             operation = "avg"
             operated = true
         case "fact"?:
             var factorial : Double = 1;
-            var start = Double(numberString)!
+            var start = numberString != "undef" ? Double(numberString)! : 0
             while start > 0 {
                 factorial *= start
                 start -= 1
             }
             display.text = String(factorial)
-            numberString = ""
             calculated = true
+            reset()
         case "="?:
-            let value = calculate(Double(numberString)!)
+            let value = isCommonOp() ? calculate(Double(numberString)!) : calculate()
             display.text = String(value)
             calculated = true
             reset()
         case "."?:
             if !numberString.contains(".") {
+                if numberString == "undef" {
+                    numberString = "."
+                } else {
+                    numberString += "."
+                }
                 display.text = display.text! + "."
-                numberString += "."
             }
             
         case "+/-"?:
-            if !numberString.starts(with: "-") {
-                numberString = "-" + numberString
-                display.text = numberString
-            } else {
-                let index = numberString.index(numberString.startIndex, offsetBy: 1)
-                numberString = String(numberString[index...])
-                display.text = numberString
+            if numberString != "undef" {
+                if !numberString.starts(with: "-") {
+                    numberString = "-" + numberString
+                    display.text = numberString
+                } else {
+                    let index = numberString.index(numberString.startIndex, offsetBy: 1)
+                    numberString = String(numberString[index...])
+                    display.text = numberString
+                }
             }
             
         default:
             break
+        }
+    }
+    
+    fileprivate func calculate() -> Double {
+        switch operation {
+        case "avg":
+            return sum / count
+        case "ct":
+            return count
+        default:
+            return 0
         }
     }
     
@@ -118,7 +140,7 @@ class ViewController: UIViewController {
             }
             return storedValue
         case "avg":
-            return count / sum
+            return sum / count
         case "ct":
             return count
         default:
@@ -127,12 +149,16 @@ class ViewController: UIViewController {
     }
     
     fileprivate func reset() -> Void {
-        numberString = ""
+        numberString = "undef"
         operation = ""
         count = 0
         sum = 0
         storedValue = 0
         operated = false
+    }
+    
+    fileprivate func isCommonOp() -> Bool {
+        return operation == "+" || operation == "-" || operation == "*" || operation == "/" || operation == "%"
     }
 
 }
